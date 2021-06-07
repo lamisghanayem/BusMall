@@ -1,3 +1,4 @@
+/* eslint-disable no-dupe-keys */
 /* eslint-disable semi */
 /* eslint-disable no-trailing-spaces */
 /* eslint-disable no-unreachable */
@@ -12,13 +13,15 @@ let firstImageEl= document.getElementById('firstImage');
 let secondImageEl= document.getElementById('secondImage');
 let thirdImageEl= document.getElementById('thirdImage');
 
-let rounds = 25;
+let rounds = 5;
 let counter = 1;
 
 let firstIndex;
 let secondIndex;
 let thirdIndex;
 
+let arrayOfImageName = [];
+let arrOfVotes = [];
 
 
 function Product(productName,imageSource,NumOfshown){
@@ -27,6 +30,7 @@ function Product(productName,imageSource,NumOfshown){
   this.NumOfshown = 0;
   this.votes = 0;
   Product.all.push(this);
+  arrayOfImageName.push(this.productName);
 }
 
 Product.all = [];
@@ -63,26 +67,18 @@ function displayImages(){
     secondIndex = generateImage();
     thirdIndex = generateImage();
 
-    /*if(firstIndex === secondIndex && firstIndex === thirdIndex ){
-        firstIndex = generateRandomIndex(); 
-        else if(secondIndex === firstIndex && secondIndex === thirdIndex){
-            secondIndex = generateRandomIndex(); 
-        }
-        else if(thirdIndex === firstIndex && thirdIndex === secondIndex){
-            thirdIndex = generateRandomIndex(); 
-            else if(firstIndex===secondIndex===thirdIndex){
-                firstIndex = generateRandomIndex(); 
-                secondIndex = generateRandomIndex(); 
-    }*/
-
     while (firstIndex===secondIndex || firstIndex===thirdIndex || secondIndex===thirdIndex){
                 firstIndex = generateImage(); 
                 secondIndex = generateImage(); 
-                thirdIndex = generateImage();
+                //thirdIndex = generateImage();
 
     }
 
-  
+    for(i=0; i<2; i++){
+
+        
+    }
+   
 
     //leftImageElement.setAttribute('src',GoatImage.allGoats[leftIndex].source);
     firstImageEl.src = Product.all[firstIndex].imageSource;
@@ -97,15 +93,15 @@ function displayImages(){
 
 function generateImage() {
     let randomProduct = Math.floor (Math.random() * Product.all.length);
-    console.log(randomProduct);
+    //console.log(randomProduct);
     return randomProduct;
 }
-  
+  // add eventListener to the container of the images itseld
 firstImageEl.addEventListener('click',handleClicking);
 secondImageEl.addEventListener('click',handleClicking);
 thirdImageEl.addEventListener('click',handleClicking);
 
-
+let btnEl;
 function handleClicking(event){
     counter++;
 
@@ -113,15 +109,19 @@ function handleClicking(event){
         
           if(event.target.id === 'firstImage'){
             Product.all[firstIndex].votes++;
+            
         
         }
 
             else if (event.target.id === 'secondImage'){ 
                 Product.all[secondIndex].votes++;
+                
             }
                 else if (event.target.id === 'thirdImage'){
                   
                     Product.all[thirdIndex].votes++;
+                   
+                   
                 }
                 displayImages();
             }
@@ -129,8 +129,8 @@ function handleClicking(event){
 
                 else{
 
-                    let btnEl = document.getElementById('btn');
-                    btnEl.addEventListener ('click', report);
+                    btnEl = document.getElementById('btn');
+                    btnEl.addEventListener ('click', handleShowing);
 
                     firstImageEl.removeEventListener('click',handleClicking);
                     secondImageEl.removeEventListener('click',handleClicking);
@@ -139,12 +139,62 @@ function handleClicking(event){
               
             }
 
-            function report(){
+            function handleShowing(){
+                report();
+                gettingChart();
+                btnEl.removeEventListener('click',handleShowing);
+              }
+
+            let arrOfShown = [];
+
+              function report(){
                 let ulEl = document.getElementById('list');
                 for(let i = 0 ; i <Product.all.length; i++ ){
+
+                    arrOfVotes.push(Product.all[i].votes);
+                    //console.log(arrOfVotes);
+                    arrOfShown.push(Product.all[i].NumOfshown);
+                    //console.log('arrOfShown');
+
+
                   let liEl = document.createElement('li');
                   ulEl.appendChild(liEl);
                   liEl.textContent = `${Product.all[i].productName} is the most popular product, it was shown ${Product.all[i].NumOfshown} times, Total votes: ${Product.all[i].votes} `;
                 }
             }
-        
+
+//console.log(arrOfVotes, arrOfShown);
+
+
+
+
+
+function gettingChart() {
+
+
+    let ctx = document.getElementById('myChart')
+    let myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: arrayOfImageName,
+            datasets: [{
+                label: '# of Votes',
+                data: arrOfVotes,
+                backgroundColor: [
+                    'rgba(255, 99, 132)',
+                ],
+                borderWidth: 1
+            }, {
+                label: '# of Seen',
+                data: arrOfShown,
+                backgroundColor: [
+                    'rgba(255, 0, 0)',
+                ],
+                borderWidth: 2
+            }]
+        },
+    });
+}
+
+
+
