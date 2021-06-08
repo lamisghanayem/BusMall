@@ -60,6 +60,7 @@ new Product('wine-glass','images/wine-glass.jpg');
 
 
 //Display the image function
+let lastSeen =[];
 
 function displayImages(){
 
@@ -67,17 +68,19 @@ function displayImages(){
     secondIndex = generateImage();
     thirdIndex = generateImage();
 
-    while (firstIndex===secondIndex || firstIndex===thirdIndex || secondIndex===thirdIndex){
+    while (firstIndex===secondIndex || firstIndex===thirdIndex || secondIndex===thirdIndex || lastSeen.includes(firstIndex) || lastSeen.includes(secondIndex) || lastSeen.includes(thirdIndex)){
                 firstIndex = generateImage(); 
                 secondIndex = generateImage(); 
-                //thirdIndex = generateImage();
+                thirdIndex = generateImage();
 
     }
 
-    for(i=0; i<2; i++){
 
-        
-    }
+    lastSeen[0]=firstIndex;
+    lastSeen[1]=secondIndex;
+    lastSeen[2]=thirdIndex;
+
+
    
 
     //leftImageElement.setAttribute('src',GoatImage.allGoats[leftIndex].source);
