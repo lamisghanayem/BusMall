@@ -13,6 +13,8 @@ let firstImageEl= document.getElementById('firstImage');
 let secondImageEl= document.getElementById('secondImage');
 let thirdImageEl= document.getElementById('thirdImage');
 
+let ulEl = document.getElementById('list');
+
 let rounds = 5;
 let counter = 1;
 
@@ -143,15 +145,18 @@ function handleClicking(event){
             }
 
             function handleShowing(){
+                
                 report();
                 gettingChart();
+                setToLocalS();
                 btnEl.removeEventListener('click',handleShowing);
               }
 
             let arrOfShown = [];
 
               function report(){
-                let ulEl = document.getElementById('list');
+                //let ulEl = document.getElementById('list'); I make it global to use it in getFromLs function
+                list.textContent = '';
                 for(let i = 0 ; i <Product.all.length; i++ ){
 
                     arrOfVotes.push(Product.all[i].votes);
@@ -184,14 +189,14 @@ function gettingChart() {
                 label: '# of Votes',
                 data: arrOfVotes,
                 backgroundColor: [
-                    'rgba(255, 99, 132)',
+                    'rgba(255, 100, 132)',
                 ],
                 borderWidth: 1
             }, {
                 label: '# of Seen',
                 data: arrOfShown,
                 backgroundColor: [
-                    'rgba(255, 0, 0)',
+                    'rgba(233,59,129)',
                 ],
                 borderWidth: 2
             }]
@@ -200,4 +205,28 @@ function gettingChart() {
 }
 
 
+function setToLocalS(){
+//converted using stringfy the product.all array to string and to a new array stringArr
+let stringArr = JSON.stringify(Product.all);
+//adding to LS the ul list of shown and votes as a string array
+localStorage.setItem('list',stringArr);
 
+}
+
+function gettingFromLocalS(){
+
+    let newList= localStorage.getItem('list');
+    //console.log(list);
+    let parsedList= JSON.parse(newList);
+    //console.log(parsedList);
+
+    if(parsedList){ // parsedList !== Null
+
+        Product.all = parsedList;
+        //renderOrders();
+      }
+
+}
+
+
+gettingFromLocalS();
